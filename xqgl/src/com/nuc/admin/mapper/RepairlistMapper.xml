@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nuc.admin.com.nuc.admin.dao.IRepairlistDao">
+
+	<insert id="addRepairlist" parameterType="Repairlist">
+		<![CDATA[
+			insert into repairlist
+				values(null,#{repaircontent},#{repairtime},#{performance},#{repaircost},#{room_id})
+		]]>
+	</insert>
+
+	<delete id="delRepairlist" parameterType="int">
+		<![CDATA[
+			delete from repairlist where repairlistid=#{repairlistid}
+		]]>
+	</delete>
+
+	<delete id="delRepairlists" parameterType="int">
+		<![CDATA[
+			delete from repairlist where repairlistid in 
+		]]>
+		<foreach collection="array" item="repairlistids"  open="(" separator="," close=")">
+			#{repairlistids}
+		</foreach>
+	</delete>
+
+	<update id="updateRepairlist" parameterType="Repairlist">
+		<![CDATA[
+			UPDATE repairlist
+		]]>
+		<set>
+			<if test="repaircontent!=null and repaircontent!=''">
+			<![CDATA[
+				repaircontent = #{repaircontent},
+			]]>
+			</if>
+			<if test="repairtime!=null and repairtime!=''">
+			<![CDATA[
+				repairtime = #{repairtime},
+			]]>
+			</if>
+			<if test="performance!=null and performance!=''">
+			<![CDATA[
+				performance = #{performance},
+			]]>
+			</if>
+			<if test="repaircost!=0">
+			<![CDATA[
+				repaircost = #{repaircost}
+			]]>
+			</if>
+		</set>
+		<![CDATA[
+			where repairlistid = #{repairlistid}
+		]]>
+	</update>
+
+	<select id="getRepairlist" parameterType="Repairlist" resultType="Repairlist">
+		<![CDATA[
+			SELECT a.*,r.room_no,u.user_id,u.real_name FROM repairlist a
+			  join room r on a.room_id = r.room_id
+			  join user u on r.room_id = u.room_id
+		]]>
+		<where>
+			<if test="repairlistid!=0">
+			<![CDATA[
+				repairlistid = #{repairlistid}
+			]]>
+			</if>
+		</where>
+	</select>
+
+	<select id="listRepairlists" parameterType="Repairlist" resultType="Repairlist">
+		<![CDATA[
+			SELECT * FROM (
+			SELECT a.*,r.room_no,u.user_id,u.real_name FROM repairlist a
+			  join room r on a.room_id = r.room_id
+			  join user u on r.room_id = u.room_id
+		]]>
+		<where>
+			<if test="repairlistid!=0">
+			<![CDATA[
+				repairlistid = #{repairlistid}
+			]]>
+			</if>
+			<if test="user_id!=0">
+			<![CDATA[
+				and u.user_id = #{user_id}
+			]]>
+			</if>
+			<if test="real_name!=null and real_name!=''">
+			<![CDATA[
+				and u.real_name like '%${real_name}%'
+			]]>
+			</if>
+			<if test="room_id!=0">
+			<![CDATA[
+				and a.room_id = #{room_id}
+			]]>
+			</if>
+			<if test="room_no!=null and room_no!=''">
+			<![CDATA[
+				and r.room_no like '%${room_no}%'
+			]]>
+			</if>
+		</where>
+		<![CDATA[
+			order by repairtime desc,repairlistid asc) t
+		]]>
+		<if test="start!=-1">
+		<![CDATA[
+			Limit ${start},${limit}
+		]]>
+		</if>
+	</select>
+
+	<select id="listRepairlistsCount" parameterType="Repairlist" resultType="int">
+		<![CDATA[
+			SELECT count(*) FROM repairlist a
+			  join room r on a.room_id = r.room_id
+			  join user u on r.room_id = u.room_id
+		]]>
+		<where>
+			<if test="repairlistid!=0">
+			<![CDATA[
+				repairlistid = #{repairlistid}
+			]]>
+			</if>
+			<if test="user_id!=0">
+			<![CDATA[
+				and u.user_id = #{user_id}
+			]]>
+			</if>
+			<if test="real_name!=null and real_name!=''">
+			<![CDATA[
+				and u.real_name like '%${real_name}%'
+			]]>
+			</if>
+			<if test="room_id!=0">
+			<![CDATA[
+				and a.room_id = #{room_id}
+			]]>
+			</if>
+			<if test="room_no!=null and room_no!=''">
+			<![CDATA[
+				and r.room_no like '%${room_no}%'
+			]]>
+			</if>
+		</where>
+	</select>
+
+</mapper>

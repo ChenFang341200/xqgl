@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nuc.admin.com.nuc.admin.dao.IWyfeeDao">
+
+	<insert id="addWyfee" parameterType="Wyfee">
+		<![CDATA[
+			insert into wyfee
+				values(null,#{wyfee_price},#{wyfee_start},#{wyfee_end},#{wyfee_money},#{room_id})
+		]]>
+	</insert>
+
+	<delete id="delWyfee" parameterType="int">
+		<![CDATA[
+			delete from wyfee where wyfee_id=#{wyfee_id}
+		]]>
+	</delete>
+
+	<delete id="delWyfees" parameterType="int">
+		<![CDATA[
+			delete from wyfee where wyfee_id in 
+		]]>
+		<foreach collection="array" item="wyfee_ids"  open="(" separator="," close=")">
+			#{wyfee_ids}
+		</foreach>
+	</delete>
+
+	<update id="updateWyfee" parameterType="Wyfee">
+		<![CDATA[
+			UPDATE wyfee
+		]]>
+		<set>
+			<if test="wyfee_price!=0">
+			<![CDATA[
+				wyfee_price = #{wyfee_price},
+			]]>
+			</if>
+			<if test="wyfee_start!=null and wyfee_start!=''">
+			<![CDATA[
+				wyfee_start = #{wyfee_start},
+			]]>
+			</if>
+			<if test="wyfee_end!=null and wyfee_end!=''">
+			<![CDATA[
+				wyfee_end = #{wyfee_end},
+			]]>
+			</if>
+			<if test="wyfee_money!=0">
+			<![CDATA[
+				wyfee_money = #{wyfee_money},
+			]]>
+			</if>
+			<if test="room_id!=0">
+			<![CDATA[
+				room_id = #{room_id}
+			]]>
+			</if>
+		</set>
+		<![CDATA[
+			where wyfee_id = #{wyfee_id}
+		]]>
+	</update>
+
+	<select id="getWyfee" parameterType="Wyfee" resultType="Wyfee">
+		<![CDATA[
+			SELECT a.*,r.room_no,u.user_id,u.real_name FROM wyfee a
+			  join room r on a.room_id = r.room_id
+			  join user u on r.room_id = u.room_id
+		]]>
+		<where>
+			<if test="wyfee_id!=0">
+			<![CDATA[
+				wyfee_id = #{wyfee_id}
+			]]>
+			</if>
+		</where>
+	</select>
+
+	<select id="listWyfees" parameterType="Wyfee" resultType="Wyfee">
+		<![CDATA[
+			SELECT * FROM (
+			SELECT a.*,r.room_no,u.user_id,u.real_name FROM wyfee a
+			  join room r on a.room_id = r.room_id
+			  join user u on r.room_id = u.room_id
+		]]>
+		<where>
+			<if test="wyfee_id!=0">
+			<![CDATA[
+				wyfee_id = #{wyfee_id}
+			]]>
+			</if>
+			<if test="user_id!=0">
+			<![CDATA[
+				and u.user_id = #{user_id}
+			]]>
+			</if>
+			<if test="real_name!=null and real_name!=''">
+			<![CDATA[
+				and u.real_name like '%${real_name}%'
+			]]>
+			</if>
+			<if test="room_id!=0">
+			<![CDATA[
+				and a.room_id = #{room_id}
+			]]>
+			</if>
+			<if test="room_no!=null and room_no!=''">
+			<![CDATA[
+				and r.room_no like '%${room_no}%'
+			]]>
+			</if>
+		</where>
+		<![CDATA[
+			order by wyfee_id asc) t
+		]]>
+		<if test="start!=-1">
+		<![CDATA[
+			Limit ${start},${limit}
+		]]>
+		</if>
+	</select>
+
+	<select id="listWyfeesCount" parameterType="Wyfee" resultType="int">
+		<![CDATA[
+			SELECT count(*) FROM wyfee a
+			  join room r on a.room_id = r.room_id
+			  join user u on r.room_id = u.room_id
+		]]>
+		<where>
+			<if test="wyfee_id!=0">
+			<![CDATA[
+				wyfee_id = #{wyfee_id}
+			]]>
+			</if>
+			<if test="user_id!=0">
+			<![CDATA[
+				and u.user_id = #{user_id}
+			]]>
+			</if>
+			<if test="real_name!=null and real_name!=''">
+			<![CDATA[
+				and u.real_name like '%${real_name}%'
+			]]>
+			</if>
+			<if test="room_id!=0">
+			<![CDATA[
+				and a.room_id = #{room_id}
+			]]>
+			</if>
+			<if test="room_no!=null and room_no!=''">
+			<![CDATA[
+				and r.room_no like '%${room_no}%'
+			]]>
+			</if>
+		</where>
+	</select>
+
+</mapper>

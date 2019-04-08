@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nuc.admin.com.nuc.admin.dao.ICarfeeDao">
+
+	<insert id="addCarfee" parameterType="Carfee">
+		<![CDATA[
+			insert into carfee
+				values(null,#{carfee_price},#{carfee_start},#{carfee_end},#{carfee_money},#{carno},#{user_id})
+		]]>
+	</insert>
+
+	<delete id="delCarfee" parameterType="int">
+		<![CDATA[
+			delete from carfee where carfee_id=#{carfee_id}
+		]]>
+	</delete>
+
+	<delete id="delCarfees" parameterType="int">
+		<![CDATA[
+			delete from carfee where carfee_id in 
+		]]>
+		<foreach collection="array" item="carfee_ids"  open="(" separator="," close=")">
+			#{carfee_ids}
+		</foreach>
+	</delete>
+
+	<update id="updateCarfee" parameterType="Carfee">
+		<![CDATA[
+			UPDATE carfee
+		]]>
+		<set>
+			<if test="carfee_price!=0">
+			<![CDATA[
+				carfee_price = #{carfee_price},
+			]]>
+			</if>
+			<if test="carfee_start!=null and carfee_start!=''">
+			<![CDATA[
+				carfee_start = #{carfee_start},
+			]]>
+			</if>
+			<if test="carfee_end!=null and carfee_end!=''">
+			<![CDATA[
+				carfee_end = #{carfee_end},
+			]]>
+			</if>
+			<if test="carfee_money!=0">
+			<![CDATA[
+				carfee_money = #{carfee_money},
+			]]>
+			</if>
+			<if test="carno!=null and carno!=''">
+			<![CDATA[
+				carno = #{carno},
+			]]>
+			</if>
+			<if test="user_id!=0">
+			<![CDATA[
+				user_id = #{user_id}
+			]]>
+			</if>
+		</set>
+		<![CDATA[
+			where carfee_id = #{carfee_id}
+		]]>
+	</update>
+
+	<select id="getCarfee" parameterType="Carfee" resultType="Carfee">
+		<![CDATA[
+			SELECT c.*,u.real_name FROM carfee c join user u on c.user_id=u.user_id
+		]]>
+		<where>
+			<if test="carfee_id!=0">
+			<![CDATA[
+				carfee_id = #{carfee_id}
+			]]>
+			</if>
+		</where>
+	</select>
+
+	<select id="listCarfees" parameterType="Carfee" resultType="Carfee">
+		<![CDATA[
+			SELECT * FROM (
+			SELECT c.*,u.real_name FROM carfee c join user u on c.user_id=u.user_id
+		]]>
+		<where>
+			<if test="carfee_id!=0">
+			<![CDATA[
+				carfee_id = #{carfee_id}
+			]]>
+			</if>
+			<if test="user_id!=0">
+			<![CDATA[
+				and c.user_id = #{user_id}
+			]]>
+			</if>
+			<if test="real_name!=null and real_name!=''">
+			<![CDATA[
+				and u.real_name like '%${real_name}%'
+			]]>
+			</if>
+			<if test="carno!=null and carno!=''">
+			<![CDATA[
+				and c.carno like '%${carno}%'
+			]]>
+			</if>
+		</where>
+		<![CDATA[
+			order by carfee_id desc) t
+		]]>
+		<if test="start!=-1">
+		<![CDATA[
+			Limit ${start},${limit}
+		]]>
+		</if>
+	</select>
+
+	<select id="listCarfeesCount" parameterType="Carfee" resultType="int">
+		<![CDATA[
+			SELECT count(*) FROM carfee c join user u on c.user_id=u.user_id
+		]]>
+		<where>
+			<if test="carfee_id!=0">
+			<![CDATA[
+				carfee_id = #{carfee_id}
+			]]>
+			</if>
+			<if test="user_id!=0">
+			<![CDATA[
+				and c.user_id = #{user_id}
+			]]>
+			</if>
+			<if test="real_name!=null and real_name!=''">
+			<![CDATA[
+				and u.real_name like '%${real_name}%'
+			]]>
+			</if>
+			<if test="carno!=null and carno!=''">
+			<![CDATA[
+				and c.carno like '%${carno}%'
+			]]>
+			</if>
+		</where>
+	</select>
+
+</mapper>

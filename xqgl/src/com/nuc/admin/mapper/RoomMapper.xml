@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nuc.admin.com.nuc.admin.dao.IRoomDao">
+
+	<insert id="addRoom" parameterType="Room">
+		<![CDATA[
+			insert into room
+				values(null,#{room_no},#{build_no},#{unit_no},#{door_no},#{room_model},#{room_area},#{room_flag})
+		]]>
+	</insert>
+
+	<delete id="delRoom" parameterType="int">
+		<![CDATA[
+			delete from room where room_id=#{room_id}
+		]]>
+	</delete>
+
+	<delete id="delRooms" parameterType="int">
+		<![CDATA[
+			delete from room where room_id in 
+		]]>
+		<foreach collection="array" item="room_ids"  open="(" separator="," close=")">
+			#{room_ids}
+		</foreach>
+	</delete>
+
+	<update id="updateRoom" parameterType="Room">
+		<![CDATA[
+			UPDATE room
+		]]>
+		<set>
+			<if test="room_no!=null and room_no!=''">
+			<![CDATA[
+				room_no = #{room_no},
+			]]>
+			</if>
+			<if test="build_no!=null and build_no!=''">
+			<![CDATA[
+				build_no = #{build_no},
+			]]>
+			</if>
+			<if test="unit_no!=null and unit_no!=''">
+			<![CDATA[
+				unit_no = #{unit_no},
+			]]>
+			</if>
+			<if test="door_no!=null and door_no!=''">
+			<![CDATA[
+				door_no = #{door_no},
+			]]>
+			</if>
+			<if test="room_model!=null and room_model!=''">
+			<![CDATA[
+				room_model = #{room_model},
+			]]>
+			</if>
+			<if test="room_area!=null and room_area!=''">
+			<![CDATA[
+				room_area = #{room_area},
+			]]>
+			</if>
+			<if test="room_flag!=null and room_flag!=''">
+			<![CDATA[
+				room_flag = #{room_flag}
+			]]>
+			</if>
+		</set>
+		<![CDATA[
+			where room_id = #{room_id}
+		]]>
+	</update>
+
+	<select id="getRoom" parameterType="Room" resultType="Room">
+		<![CDATA[
+			SELECT r.*,u.user_id,u.real_name FROM room r left join user u on r.room_id=u.room_id
+		]]>
+		<where>
+			<if test="room_id!=0">
+			<![CDATA[
+				r.room_id = #{room_id}
+			]]>
+			</if>
+			<if test="room_no!=null and room_no!=''">
+			<![CDATA[
+				and room_no = #{room_no}
+			]]>
+			</if>
+		</where>
+	</select>
+
+	<select id="listRooms" parameterType="Room" resultType="Room">
+		<![CDATA[
+			SELECT * FROM (
+			SELECT r.*,u.user_id,u.real_name FROM room r left join user u on r.room_id=u.room_id
+		]]>
+		<where>
+			<if test="room_id!=0">
+			<![CDATA[
+				r.room_id = #{room_id}
+			]]>
+			</if>
+			<if test="room_no!=null and room_no!=''">
+			<![CDATA[
+				and room_no like '%${room_no}%'
+			]]>
+			</if>
+			<if test="user_id!=0">
+			<![CDATA[
+				and u.user_id = #{user_id}
+			]]>
+			</if>
+			<if test="real_name!=null and real_name!=''">
+			<![CDATA[
+				and u.real_name like '%${real_name}%'
+			]]>
+			</if>
+		</where>
+		<![CDATA[
+			order by room_id asc) t
+		]]>
+		<if test="start!=-1">
+		<![CDATA[
+			Limit ${start},${limit}
+		]]>
+		</if>
+	</select>
+
+	<select id="listRoomsCount" parameterType="Room" resultType="int">
+		<![CDATA[
+			SELECT count(*) FROM room r left join user u on r.room_id=u.room_id
+		]]>
+		<where>
+			<if test="room_id!=0">
+			<![CDATA[
+				r.room_id = #{room_id}
+			]]>
+			</if>
+			<if test="room_no!=null and room_no!=''">
+			<![CDATA[
+				and room_no like '%${room_no}%'
+			]]>
+			</if>
+			<if test="user_id!=0">
+			<![CDATA[
+				and u.user_id = #{user_id}
+			]]>
+			</if>
+			<if test="real_name!=null and real_name!=''">
+			<![CDATA[
+				and u.real_name like '%${real_name}%'
+			]]>
+			</if>
+		</where>
+	</select>
+
+</mapper>

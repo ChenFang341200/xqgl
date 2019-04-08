@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/xqgl/xqgl.iml" filepath="$PROJECT_DIR$/xqgl/xqgl.iml" />
+      <module fileurl="file://$PROJECT_DIR$/xqglc.iml" filepath="$PROJECT_DIR$/xqglc.iml" />
+    </modules>
+  </component>
+</project>

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nuc.admin.com.nuc.admin.dao.ICarDao">
+
+	<insert id="addCar" parameterType="Car">
+		<![CDATA[
+			insert into car
+				values(null,#{car_no},#{car_area},#{car_loc},#{car_flag})
+		]]>
+	</insert>
+
+	<delete id="delCar" parameterType="int">
+		<![CDATA[
+			delete from car where car_id=#{car_id}
+		]]>
+	</delete>
+
+	<delete id="delCars" parameterType="int">
+		<![CDATA[
+			delete from car where car_id in 
+		]]>
+		<foreach collection="array" item="car_ids"  open="(" separator="," close=")">
+			#{car_ids}
+		</foreach>
+	</delete>
+
+	<update id="updateCar" parameterType="Car">
+		<![CDATA[
+			UPDATE car
+		]]>
+		<set>
+			<if test="car_no!=null and car_no!=''">
+			<![CDATA[
+				car_no = #{car_no},
+			]]>
+			</if>
+			<if test="car_area!=null and car_area!=''">
+			<![CDATA[
+				car_area = #{car_area},
+			]]>
+			</if>
+			<if test="car_loc!=null and car_loc!=''">
+			<![CDATA[
+				car_loc = #{car_loc},
+			]]>
+			</if>
+			<if test="car_flag!=null and car_flag!=''">
+			<![CDATA[
+				car_flag = #{car_flag}
+			]]>
+			</if>
+		</set>
+		<![CDATA[
+			where car_id = #{car_id}
+		]]>
+	</update>
+
+	<select id="getCar" parameterType="Car" resultType="Car">
+		<![CDATA[
+			SELECT * FROM car
+		]]>
+		<where>
+			<if test="car_id!=0">
+			<![CDATA[
+				car_id = #{car_id}
+			]]>
+			</if>
+			<if test="car_no!=null and car_no!=''">
+			<![CDATA[
+				and car_no = #{car_no}
+			]]>
+			</if>
+		</where>
+	</select>
+
+	<select id="listCars" parameterType="Car" resultType="Car">
+		<![CDATA[
+			SELECT * FROM (
+			SELECT * FROM car
+		]]>
+		<where>
+			<if test="car_id!=0">
+			<![CDATA[
+				car_id = #{car_id}
+			]]>
+			</if>
+			<if test="car_no!=null and car_no!=''">
+			<![CDATA[
+				and car_no like '%${car_no}%'
+			]]>
+			</if>
+			<if test="car_flag!=null and car_flag!=''">
+			<![CDATA[
+				and car_flag = #{car_flag}
+			]]>
+			</if>
+		</where>
+		<![CDATA[
+			order by car_id asc) t
+		]]>
+		<if test="start!=-1">
+		<![CDATA[
+			Limit ${start},${limit}
+		]]>
+		</if>
+	</select>
+
+	<select id="listCarsCount" parameterType="Car" resultType="int">
+		<![CDATA[
+			SELECT count(*) FROM car
+		]]>
+		<where>
+			<if test="car_id!=0">
+			<![CDATA[
+				car_id = #{car_id}
+			]]>
+			</if>
+			<if test="car_no!=null and car_no!=''">
+			<![CDATA[
+				and car_no like '%${car_no}%'
+			]]>
+			</if>
+			<if test="car_flag!=null and car_flag!=''">
+			<![CDATA[
+				and car_flag = #{car_flag}
+			]]>
+			</if>
+		</where>
+	</select>
+
+</mapper>

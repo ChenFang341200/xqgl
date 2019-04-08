@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nuc.admin.com.nuc.admin.dao.IFaciDao">
+
+	<insert id="addFaci" parameterType="Faci">
+		<![CDATA[
+			insert into faci
+				values(null,#{faci_no},#{faci_name},#{faci_price},#{faci_loc})
+		]]>
+	</insert>
+
+	<delete id="delFaci" parameterType="int">
+		<![CDATA[
+			delete from faci where faci_id=#{faci_id}
+		]]>
+	</delete>
+
+	<delete id="delFacis" parameterType="int">
+		<![CDATA[
+			delete from faci where faci_id in 
+		]]>
+		<foreach collection="array" item="faci_ids"  open="(" separator="," close=")">
+			#{faci_ids}
+		</foreach>
+	</delete>
+
+	<update id="updateFaci" parameterType="Faci">
+		<![CDATA[
+			UPDATE faci
+		]]>
+		<set>
+			<if test="faci_no!=null and faci_no!=''">
+			<![CDATA[
+				faci_no = #{faci_no},
+			]]>
+			</if>
+			<if test="faci_name!=null and faci_name!=''">
+			<![CDATA[
+				faci_name = #{faci_name},
+			]]>
+			</if>
+			<if test="faci_price!=null and faci_price!=''">
+			<![CDATA[
+				faci_price = #{faci_price},
+			]]>
+			</if>
+			<if test="faci_loc!=null and faci_loc!=''">
+			<![CDATA[
+				faci_loc = #{faci_loc}
+			]]>
+			</if>
+		</set>
+		<![CDATA[
+			where faci_id = #{faci_id}
+		]]>
+	</update>
+
+	<select id="getFaci" parameterType="Faci" resultType="Faci">
+		<![CDATA[
+			SELECT * FROM faci
+		]]>
+		<where>
+			<if test="faci_id!=0">
+			<![CDATA[
+				faci_id = #{faci_id}
+			]]>
+			</if>
+			<if test="faci_no!=null and faci_no!=''">
+			<![CDATA[
+				and faci_no = #{faci_no}
+			]]>
+			</if>
+		</where>
+	</select>
+
+	<select id="listFacis" parameterType="Faci" resultType="Faci">
+		<![CDATA[
+			SELECT * FROM (
+			SELECT * FROM faci
+		]]>
+		<where>
+			<if test="faci_id!=0">
+			<![CDATA[
+				faci_id = #{faci_id}
+			]]>
+			</if>
+			<if test="faci_no!=null and faci_no!=''">
+			<![CDATA[
+				and faci_no like '%${faci_no}%'
+			]]>
+			</if>
+			<if test="faci_name!=null and faci_name!=''">
+			<![CDATA[
+				and faci_name like '%${faci_name}%'
+			]]>
+			</if>
+		</where>
+		<![CDATA[
+			order by faci_id asc) t
+		]]>
+		<if test="start!=-1">
+		<![CDATA[
+			Limit ${start},${limit}
+		]]>
+		</if>
+	</select>
+
+	<select id="listFacisCount" parameterType="Faci" resultType="int">
+		<![CDATA[
+			SELECT count(*) FROM faci
+		]]>
+		<where>
+			<if test="faci_id!=0">
+			<![CDATA[
+				faci_id = #{faci_id}
+			]]>
+			</if>
+			<if test="faci_no!=null and faci_no!=''">
+			<![CDATA[
+				and faci_no like '%${faci_no}%'
+			]]>
+			</if>
+			<if test="faci_name!=null and faci_name!=''">
+			<![CDATA[
+				and faci_name like '%${faci_name}%'
+			]]>
+			</if>
+		</where>
+	</select>
+
+</mapper>

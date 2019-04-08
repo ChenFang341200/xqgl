@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nuc.admin.com.nuc.admin.dao.IWorkerDao">
+
+	<insert id="addWorker" parameterType="Worker">
+		<![CDATA[
+			insert into worker
+				values(null,#{worker_no},#{worker_name},#{worker_sex},#{worker_birth},#{worker_content},#{worker_type})
+		]]>
+	</insert>
+
+	<delete id="delWorker" parameterType="int">
+		<![CDATA[
+			delete from worker where worker_id=#{worker_id}
+		]]>
+	</delete>
+
+	<delete id="delWorkers" parameterType="int">
+		<![CDATA[
+			delete from worker where worker_id in 
+		]]>
+		<foreach collection="array" item="worker_ids"  open="(" separator="," close=")">
+			#{worker_ids}
+		</foreach>
+	</delete>
+
+	<update id="updateWorker" parameterType="Worker">
+		<![CDATA[
+			UPDATE worker
+		]]>
+		<set>
+			<if test="worker_no!=null and worker_no!=''">
+			<![CDATA[
+				worker_no = #{worker_no},
+			]]>
+			</if>
+			<if test="worker_sex!=0">
+			<![CDATA[
+				worker_sex = #{worker_sex},
+			]]>
+			</if>
+			<if test="worker_name!=null and worker_name!=''">
+			<![CDATA[
+				worker_name = #{worker_name},
+			]]>
+			</if>
+			<if test="worker_birth!=null and worker_birth!=''">
+			<![CDATA[
+				worker_birth = #{worker_birth},
+			]]>
+			</if>
+			<if test="worker_content!=null and worker_content!=''">
+			<![CDATA[
+				worker_content = #{worker_content}
+			]]>
+			</if>
+		</set>
+		<![CDATA[
+			where worker_id = #{worker_id}
+		]]>
+	</update>
+
+	<select id="getWorker" parameterType="Worker" resultType="Worker">
+		<![CDATA[
+			SELECT * FROM worker
+		]]>
+		<where>
+			<if test="worker_id!=0">
+			<![CDATA[
+				worker_id = #{worker_id}
+			]]>
+			</if>
+			<if test="worker_no!=null and worker_no!=''">
+			<![CDATA[
+				and worker_no = #{worker_no}
+			]]>
+			</if>
+			<if test="worker_type!=0">
+			<![CDATA[
+				and worker_type = #{worker_type}
+			]]>
+			</if>
+		</where>
+	</select>
+
+	<select id="listWorkers" parameterType="Worker" resultType="Worker">
+		<![CDATA[
+			SELECT * FROM (
+			SELECT * FROM worker
+		]]>
+		<where>
+			<if test="worker_id!=0">
+			<![CDATA[
+				worker_id = #{worker_id}
+			]]>
+			</if>
+			<if test="worker_no!=null and worker_no!=''">
+			<![CDATA[
+				and worker_no like '%${worker_no}%'
+			]]>
+			</if>
+			<if test="worker_name!=null and worker_name!=''">
+			<![CDATA[
+				and worker_name like '%${worker_name}%'
+			]]>
+			</if>
+			<if test="worker_type!=0">
+			<![CDATA[
+				and worker_type = #{worker_type}
+			]]>
+			</if>
+		</where>
+		<![CDATA[
+			order by worker_id asc) t
+		]]>
+		<if test="start!=-1">
+		<![CDATA[
+			Limit ${start},${limit}
+		]]>
+		</if>
+	</select>
+
+	<select id="listWorkersCount" parameterType="Worker" resultType="int">
+		<![CDATA[
+			SELECT count(*) FROM worker
+		]]>
+		<where>
+			<if test="worker_id!=0">
+			<![CDATA[
+				worker_id = #{worker_id}
+			]]>
+			</if>
+			<if test="worker_no!=null and worker_no!=''">
+			<![CDATA[
+				and worker_no like '%${worker_no}%'
+			]]>
+			</if>
+			<if test="worker_name!=null and worker_name!=''">
+			<![CDATA[
+				and worker_name like '%${worker_name}%'
+			]]>
+			</if>
+			<if test="worker_type!=0">
+			<![CDATA[
+				and worker_type = #{worker_type}
+			]]>
+			</if>
+		</where>
+	</select>
+
+</mapper>

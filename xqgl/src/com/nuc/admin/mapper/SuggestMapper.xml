@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nuc.admin.com.nuc.admin.dao.ISuggestDao">
+
+	<insert id="addSuggest" parameterType="Suggest">
+		<![CDATA[
+			insert into suggest
+				values(null,#{suggestcontent},#{suggesttime},#{replycontent},#{replytime},#{user_id})
+		]]>
+	</insert>
+
+	<delete id="delSuggest" parameterType="int">
+		<![CDATA[
+			delete from suggest where suggestid=#{suggestid}
+		]]>
+	</delete>
+
+	<delete id="delSuggests" parameterType="int">
+		<![CDATA[
+			delete from suggest where suggestid in 
+		]]>
+		<foreach collection="array" item="suggestids"  open="(" separator="," close=")">
+			#{suggestids}
+		</foreach>
+	</delete>
+
+	<update id="updateSuggest" parameterType="Suggest">
+		<![CDATA[
+			UPDATE suggest
+		]]>
+		<set>
+			<if test="replycontent!=null and replycontent!=''">
+			<![CDATA[
+				replycontent = #{replycontent},
+			]]>
+			</if>
+			<if test="replytime!=null and replytime!=''">
+			<![CDATA[
+				replytime = #{replytime}
+			]]>
+			</if>
+		</set>
+		<![CDATA[
+			where suggestid = #{suggestid}
+		]]>
+	</update>
+
+	<select id="getSuggest" parameterType="Suggest" resultType="Suggest">
+		<![CDATA[
+			SELECT s.*,u.real_name FROM suggest s join user u on s.user_id=u.user_id
+		]]>
+		<where>
+			<if test="suggestid!=0">
+			<![CDATA[
+				suggestid = #{suggestid}
+			]]>
+			</if>
+		</where>
+	</select>
+
+	<select id="listSuggests" parameterType="Suggest" resultType="Suggest">
+		<![CDATA[
+			SELECT * FROM (
+			SELECT s.*,u.real_name FROM suggest s join user u on s.user_id=u.user_id
+		]]>
+		<where>
+			<if test="suggestid!=0">
+			<![CDATA[
+				suggestid = #{suggestid}
+			]]>
+			</if>
+			<if test="user_id!=0">
+			<![CDATA[
+				and s.user_id = #{user_id}
+			]]>
+			</if>
+			<if test="real_name!=null and real_name!=''">
+			<![CDATA[
+				and u.real_name like '%${real_name}%'
+			]]>
+			</if>
+		</where>
+		<![CDATA[
+			order by suggesttime desc,suggestid asc) t
+		]]>
+		<if test="start!=-1">
+		<![CDATA[
+			Limit ${start},${limit}
+		]]>
+		</if>
+	</select>
+
+	<select id="listSuggestsCount" parameterType="Suggest" resultType="int">
+		<![CDATA[
+			SELECT count(*) FROM suggest s join user u on s.user_id=u.user_id
+		]]>
+		<where>
+			<if test="suggestid!=0">
+			<![CDATA[
+				suggestid = #{suggestid}
+			]]>
+			</if>
+			<if test="user_id!=0">
+			<![CDATA[
+				and s.user_id = #{user_id}
+			]]>
+			</if>
+			<if test="real_name!=null and real_name!=''">
+			<![CDATA[
+				and u.real_name like '%${real_name}%'
+			]]>
+			</if>
+		</where>
+	</select>
+
+</mapper>
